@@ -24,8 +24,6 @@ public class FileSelectUtils  {
 
     /**
      * 选择文件。调取系统的
-     *
-     * @param activity
      */
     public static void selectFile(Activity activity) {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -37,12 +35,6 @@ public class FileSelectUtils  {
 
     /**
      * 处理结果
-     *
-     * @param activity
-     * @param requestCode
-     * @param resultCode
-     * @param data
-     * @return
      */
     public static String onFileResult(Activity activity, int requestCode, int resultCode, Intent data) {
         if (requestCode != REQUEST_CODE_SELECT_FILE || resultCode != Activity.RESULT_OK) {
@@ -66,9 +58,7 @@ public class FileSelectUtils  {
      * @author paulburke
      */
     public static String getPath(final Context context, final Uri uri) {
-
         final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
-
         // DocumentProvider
         if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
             // ExternalStorageProvider
@@ -137,9 +127,7 @@ public class FileSelectUtils  {
      * @param selectionArgs (Optional) Selection arguments used in the query.
      * @return The value of the _data column, which is typically a file path.
      */
-    public static String getDataColumn(Context context, Uri uri, String selection,
-                                       String[] selectionArgs) {
-
+    public static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
         Cursor cursor = null;
         final String column = "_data";
         final String[] projection = {
@@ -160,7 +148,6 @@ public class FileSelectUtils  {
         }
         return null;
     }
-
 
     /**
      * @param uri The Uri to check.

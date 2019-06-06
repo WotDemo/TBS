@@ -14,24 +14,18 @@ import java.io.File;
 /**
  * @Author yangsanning
  * @ClassName FileUtils
- * @Description 一句话概括作用
+ * @Description 文件工具类
  * @Date 2019/6/5
  * @History 2019/6/5 author: description:
  */
 public class FileUtils {
 
-    /** 应用 所有 文件 根目录 */
-    public static String SAVE_FOLDER = "/A_fy_Cache/";
-
     private FileUtils() {
-        /* cannot be instantiated */
-        throw new UnsupportedOperationException("cannot be instantiated");
+        throw new UnsupportedOperationException("不可以初始化");
     }
 
     /**
      * 判断SDCard是否可用
-     *
-     * @return
      */
     public static boolean isSDCardEnable() {
         return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
@@ -39,8 +33,6 @@ public class FileUtils {
 
     /**
      * 获取SD卡路径
-     *
-     * @return
      */
     public static String getSDCardPath() {
         return Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
@@ -48,8 +40,6 @@ public class FileUtils {
 
     /**
      * 获取SD卡的剩余容量 单位byte
-     *
-     * @return
      */
     public static long getSDCardAllSize() {
         if (isSDCardEnable()) {
@@ -66,7 +56,6 @@ public class FileUtils {
     /**
      * 获取指定路径所在空间的剩余可用容量字节数，单位byte
      *
-     * @param filePath
      * @return 容量字节 SDCard可用空间，内部存储可用空间
      */
     public static long getFreeBytes(String filePath) {
@@ -83,8 +72,6 @@ public class FileUtils {
 
     /**
      * 获取系统存储路径
-     *
-     * @return
      */
     public static String getRootDirectoryPath() {
         return Environment.getRootDirectory().getAbsolutePath();
@@ -92,11 +79,8 @@ public class FileUtils {
 
     /**
      * 判断指定路径的文件夹是否存在，不存在创建文件夹
-     *
-     * @param filePath
-     * @return
      */
-    public static File folderIsExists(String filePath) {
+    public static File ensureFolderExists(String filePath) {
         File folder = new File(filePath);
         try {
             if (!folder.exists()) {
@@ -110,10 +94,8 @@ public class FileUtils {
 
     /**
      * 判断指定路径的 文件 是否存在，不存在创建文件
-     * @param filePath
-     * @return
      */
-    public static File fileIsExists(String filePath) {
+    public static File ensureFileExists(String filePath) {
         File file = new File(filePath);
         try {
             if (!file.exists()) {
@@ -161,11 +143,7 @@ public class FileUtils {
     }
 
     /**
-     * Gets the content:// URI from the given corresponding path to a file
-     *
-     * @param context
-     * @param imageFile
-     * @return content Uri
+     * 根据图片文件获取uri
      */
     public static Uri getImageContentUri(Context context, File imageFile) {
         String filePath = imageFile.getAbsolutePath();
@@ -187,14 +165,16 @@ public class FileUtils {
         }
     }
 
-    public static String getFilePathFromContentUri(Uri selectedVideoUri,
-                                                   ContentResolver contentResolver) {
+    /**
+     * 根据uri获取路径
+     */
+    public static String getFilePathFromContentUri(Uri uri, ContentResolver contentResolver) {
         String filePath;
         String[] filePathColumn = {MediaStore.MediaColumns.DATA};
 
-        Cursor cursor = contentResolver.query(selectedVideoUri, filePathColumn, null, null, null);
+        Cursor cursor = contentResolver.query(uri, filePathColumn, null, null, null);
 //      也可用下面的方法拿到cursor
-//      Cursor cursor = this.context.managedQuery(selectedVideoUri, filePathColumn, null, null, null);
+//      Cursor cursor = this.context.managedQuery(uri, filePathColumn, null, null, null);
 
         cursor.moveToFirst();
 

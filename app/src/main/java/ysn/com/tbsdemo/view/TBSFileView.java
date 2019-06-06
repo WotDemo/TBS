@@ -25,6 +25,8 @@ public class TBSFileView extends FrameLayout implements TbsReaderView.ReaderCall
 
     private static String TAG = "test";
 
+    private String tbsReaderTempPath;
+
     private Context context;
     private TbsReaderView tbsReaderView;
 
@@ -57,28 +59,23 @@ public class TBSFileView extends FrameLayout implements TbsReaderView.ReaderCall
 
     public void brows(File file) {
         if (file != null && !TextUtils.isEmpty(file.toString())) {
-            //增加下面一句解决没有TbsReaderTemp文件夹存在导致加载文件失败
-            String bsReaderTemp = FileUtils.getSDCardPath() + "TbsReaderTemp";
-            File tbsReaderTempFile = new File(bsReaderTemp);
-            if (!tbsReaderTempFile.exists()) {
-                boolean mkdir = tbsReaderTempFile.mkdir();
-                if (!mkdir) {
-                    Log.e(TAG, "创建TbsReaderTemp文件夹失败！！！！！");
-                }
-            }
+            // 解决没有TbsReaderTemp文件夹存在导致加载文件失败
+            FileUtils.ensureFolderExists(getTbsReaderTempPath());
 
             //加载文件
             Bundle bundle = new Bundle();
             bundle.putString("filePath", file.toString());
-            bundle.putString("tempPath", FileUtils.getSDCardPath() + "TbsReaderTemp");
+            bundle.putString("tempPath", getTbsReaderTempPath());
 
             this.tbsReaderView = getTbsReaderView();
             boolean canOpen = this.tbsReaderView.preOpen(getFileType(file.toString()), false);
             if (canOpen) {
                 this.tbsReaderView.openFile(bundle);
+            }else {
+                Log.e(TAG, "文件不可打开");
             }
         } else {
-            Log.e(TAG, "文件路径无效！");
+            Log.e(TAG, "文件路径为空");
         }
     }
 
@@ -104,8 +101,19 @@ public class TBSFileView extends FrameLayout implements TbsReaderView.ReaderCall
         return str;
     }
 
+    public String getTbsReaderTempPath() {
+        if (tbsReaderTempPath == null) {
+            tbsReaderTempPath = FileUtils.getSDCardPath() + "TbsReaderTemp";
+        }
+        return tbsReaderTempPath;
+    }
+
+    public void setTbsReaderTempPath(String tbsReaderTempPath) {
+        this.tbsReaderTempPath = tbsReaderTempPath;
+    }
+
     public void destroy() {
-        if (null != tbsReaderView) {
+        if (tbsReaderView != null) {
             tbsReaderView.onStop();
         }
     }
